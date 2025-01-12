@@ -17,7 +17,7 @@ import OpenAI from "openai";
 const openai = new OpenAI({
   organization: "org-Lcy33KyySQWqA4XvtsvZNdwu",
   project: "proj_iPWx43rSKBRf0yDz7mKuTEaj",
-  apiKey: "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",
+  apiKey: "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",
   dangerouslyAllowBrowser: true,
 });
 
