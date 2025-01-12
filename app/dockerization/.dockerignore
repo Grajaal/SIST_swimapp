@@ -1,0 +1,28 @@
+# Ignorar dependencias locales y archivos generados
+node_modules
+.next
+dist
+out
+coverage
+.git
+
+# Archivos de configuración sensibles
+.env
+.env.local
+
+# PostgreSQL
+pgdata/
+
+# Logs
+*.log
+
+# Docker y otros
+docker-compose.override.yml
+Dockerfile.*.backup
+
+# Archivos del sistema operativo y del editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

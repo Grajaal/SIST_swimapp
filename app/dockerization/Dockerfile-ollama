@@ -1,0 +1,17 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM ollama/ollama:latest
+
+RUN apt-get update && apt-get install -y curl
+
+EXPOSE 11434
+
+# Create an entrypoint script
+RUN echo '#!/bin/sh' > /entrypoint.sh && \
+  echo 'ollama serve &' >> /entrypoint.sh && \
+  echo 'sleep 5' >> /entrypoint.sh && \
+  echo 'ollama pull gemma2:latest' >> /entrypoint.sh && \
+  echo 'wait' >> /entrypoint.sh && \
+  chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

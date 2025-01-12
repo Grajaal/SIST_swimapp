@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: grajal # Usuario predeterminado
+      POSTGRES_PASSWORD: 1234 # Contraseña para el usuario
+      POSTGRES_DB: grajaldb
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      context: ../web
+      dockerfile: ../dockerization/Dockerfile-web
+    env_file:
+      - ../web/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  # ollama:
+  #   build:
+  #     dockerfile: ./Dockerfile-ollama
+  #   volumes:
+  #     - ollama-data:/root/.ollama
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 10g
+  #   ports:
+  #     - "11434:11434"
+
+volumes:
+  postgres-data: # ollama-data:

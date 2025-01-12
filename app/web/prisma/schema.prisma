@@ -1,0 +1,109 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  password      String?
+  role          Role?
+  image         String?
+  hasTeam       Boolean   @default(false) @map("has_team")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  accounts      Account[]
+  coach         Coach?
+  swimmer       Swimmer?
+
+  @@map("users")
+}
+
+model Coach {
+  id     String @id
+  teamId String @unique @map("team_id")
+  user   User   @relation(fields: [id], references: [id])
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  @@map("coaches")
+}
+
+model Swimmer {
+  id      String        @id
+  teamId  String?       @map("team_id")
+  groupId String?       @map("swimmer_group_id")
+  user    User          @relation(fields: [id], references: [id])
+  team    Team?         @relation(fields: [teamId], references: [id])
+  data    SwimmerData[]
+  group   Group[]       @relation("GroupToSwimmer")
+
+  @@map("swimmers")
+}
+
+model SwimmerData {
+  id           String   @id @default(cuid())
+  date         DateTime @default(now()) @db.Date
+  sleepHours   Int?     @map("sleep_hours")
+  sleepQuality Int?     @map("sleep_quality")
+  fatigue      Int?
+  musclePain   Int?     @map("muscle_pain")
+  stress       Int?
+  meters       Int?
+  minutes      Int?
+  swimmerId    String   @map("swimmer_id")
+  swimmer      Swimmer  @relation(fields: [swimmerId], references: [id])
+
+  @@unique([swimmerId, date])
+  @@map("swimmers_data")
+}
+
+model Group {
+  id       String    @id @default(cuid())
+  name     String
+  teamId   String    @map("team_id")
+  team     Team      @relation(fields: [teamId], references: [id])
+  swimmers Swimmer[] @relation("GroupToSwimmer")
+
+  @@map("groups")
+}
+
+model Team {
+  id       String    @id
+  coach    Coach?
+  groups   Group[]
+  swimmers Swimmer[]
+
+  @@map("teams")
+}
+
+model Account {
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+enum Role {
+  coach
+  swimmer
+}
