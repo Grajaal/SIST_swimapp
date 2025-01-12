@@ -86,4 +86,4 @@ Una vez completado el proceso, la aplicación estará disponible en http://local
 Utilizar la siguiente cuenta de test para ver como sería un caso real:
 
 - Correo: williamerickson@example.com
-- Password: 111111# SIST_swimapp
+- Password: 111111
